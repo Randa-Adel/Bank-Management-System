@@ -1,0 +1,433 @@
+#include<iostream>
+#include<string>
+using namespace std;
+struct account
+{
+	long long account_no;
+	string account_name;
+	char type;
+	int intial_amount;
+};
+account BankAccount[100];
+int menu();
+void new_account();
+void deposit_amount();
+void withdraw_amount();
+void balance_enquiry();
+void all_account_holder_list();
+void close_an_account();
+void modify_account();
+int exit();
+void switching(int);
+int NewAccount = 0;
+// عملت اراي من 100 عنصر تاني ونوعها بولين عشان اعلم فيها على الاماكن اللي فيها حسابات فاضيه عشان استخدمها لما تتملي جميع اكونتات البنك
+bool IndexOfDeletedAccount[100];
+int Enter(string str, int min = 0, int max = 10000);
+int Enter(string str, char a, char z);
+int main()
+{
+
+	for (size_t i = 0; i < 100; i++)
+	{
+		BankAccount[i].account_name = "";
+		BankAccount[i].account_no = 0;
+		BankAccount[i].intial_amount = 0;
+		BankAccount[i].type = 'n';
+	}
+	switching(menu());
+	system("pause");
+	return 0;
+}
+void switching(int option)
+{
+	switch (option)
+	{
+	case 1:new_account();
+		break;
+	case 2:deposit_amount();
+		break;
+	case 3:withdraw_amount();
+		break;
+	case 4:balance_enquiry();
+		break;
+	case 5:all_account_holder_list();
+		break;
+	case 6: close_an_account();
+		break;
+	case 7:modify_account();
+		break;
+	case 8:exit();
+		break;
+	default:
+		break;
+	}
+}
+int menu()
+{
+	int option;
+	cout << "01. New Account" << endl;
+	cout << "02. Deposit Amount" << endl;
+	cout << "03. Withdraw Amount" << endl;
+	cout << "04. Balance Enquiry" << endl;
+	cout << "05. All Account Holder List" << endl;
+	cout << "06. Close An Account" << endl;
+	cout << "07. Modify Account" << endl;
+	cout << "08. Exit" << endl;
+	cout << "Select Your Option (1-8) : ";
+	cin >> option;
+	return option;
+}
+
+int Enter(string str, int min = 0, int max=10000)
+{
+	do
+	{
+		cout << str << endl;
+		int x;
+		cin >> x;
+
+		if (x >= min && x <= max)
+		{
+			return x;
+		}
+	} while (true);
+
+
+}
+
+int Enter(string str, char a , char z)
+{
+	do
+	{
+		cout << str << endl;
+		char x;
+		cin >> x;
+		if (x == 's')
+		{
+			x = 'S';
+		}
+		if (x == 'c')
+		{
+			x = 'C';
+		}
+		if (x == z || x == a)
+		{
+			return x;
+		}
+	} while (true);
+}
+
+
+void new_account()
+{
+	bool flag = 1;
+	long long temp;
+	string xx;
+	cout << "Enter The Account No. : ";
+	cin >> temp;
+	for (int i = 0; i <= NewAccount; i++) //*
+	{
+		if (temp != BankAccount[i].account_no)//*
+		{
+			continue;
+		}
+		else
+		{
+			//عملت لوب عشان لو في تاني مره بردو اليوزر دخل رقم حساب بنكي وطلع محجوز 
+			while (temp == BankAccount[i].account_no)
+			{
+				cout << "This Account Is Reversed " << endl;
+				cout << "Please, Enter Another Number ! : ";
+				cin >> temp;
+			}
+			
+		}
+	}
+	BankAccount[NewAccount].account_no = temp;
+
+	cout << "Enter The Name Of Account Holder : ";
+	std::cin.ignore();
+	std::getline(std::cin, BankAccount[NewAccount].account_name);
+	
+	BankAccount[NewAccount].type = Enter("Enter The Type Of The Account (c/s) : ", 'C', 'S');
+
+	/*
+	cin >> BankAccount[NewAccount].type;
+	while (flag)
+	{
+		if ((BankAccount[NewAccount].type == 's') || (BankAccount[NewAccount].type == 'c') || (BankAccount[NewAccount].type == 'S') || (BankAccount[NewAccount].type == 'C'))
+		{
+			flag = 0;
+		}
+		else
+		{
+			cout << "This Can't Be A Type Of Account , Please Enter S Or C " << endl;
+			cin >> BankAccount[NewAccount].type;
+		}
+	}
+	*/
+	if (BankAccount[NewAccount].type == 'S')
+	{
+		BankAccount[NewAccount].intial_amount = Enter("Enter The Initial Amount (>=500 For Saving >=1000 For Current ) : ", 500, 100000);
+	}
+	if (BankAccount[NewAccount].type == 'C')
+	{
+		BankAccount[NewAccount].intial_amount = Enter("Enter The Initial Amount (>=500 For Saving >=1000 For Current ) : ", 1000, 100000);
+	}
+	/*
+	if ((BankAccount[NewAccount].type == 'c' || BankAccount[NewAccount].type == 'C') && (BankAccount[NewAccount].intial_amount < 1000))
+	{
+		cout << "can't complite ,Please enter more than 1000 !" << endl;
+		cin >> BankAccount[NewAccount].intial_amount;
+	}
+	else if ((BankAccount[NewAccount].type == 's' || BankAccount[NewAccount].type == 'S') && (BankAccount[NewAccount].intial_amount < 500))
+	{
+		cout << "can't complite ,Please enter more than 500 !" << endl;
+		cin >> BankAccount[NewAccount].intial_amount;
+	}
+	*/
+
+
+
+	cout << "Account Created..." << endl;
+	if (NewAccount < 100)
+	{
+		NewAccount++;
+	}
+	//عملت الحركه دي عشان لو المتغير نيو اكونت وصل ل100 وانا لاغيه حسابات في النص فيرجع يلوب على الحسابات الفاضيه لحد ما يملاها ولو اتملوا كلهم يطبع رسالة ان جميع حسابات البنك مليانه   
+	else
+	{
+		for (size_t i = 0; i < 100; i++)
+		{
+
+			if (IndexOfDeletedAccount[i] == true){
+				NewAccount = i++;
+				std::cin.ignore();
+				std::getline(std::cin, xx);
+				system("cls");
+				switching(menu());
+			}
+		}
+		cout << "This Bank Accounts Is Full !!" << endl;
+	}
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+}
+void deposit_amount()
+{
+	string xx;
+	long long x;
+	int increased_amount;
+	cout << "Enter The Account No. : ";
+	cin >> x;
+	for (size_t i = 0; i < 100; i++)
+	{
+		if (x == BankAccount[i].account_no)
+		{
+			cout << "Account Number : ";
+			cout << BankAccount[i].account_no << endl;
+			cout << "Account Holder Name : ";
+			cout << BankAccount[i].account_name << endl;
+			cout << "Type Of Account : ";
+			cout << BankAccount[i].type << endl;
+			cout << "Balance Amount : ";
+			cout << BankAccount[i].intial_amount << endl;
+			cout << "\t\tTo Deposit Amount\t\t" << endl;
+			cout << "Enter the Amount To Be Deposited" << endl;
+			cin >> increased_amount;
+			while (increased_amount < 0)
+			{
+				cout << "You Can't Enter A Negative Amount , Please Enter A Positive Amount !!" << endl;
+				cin >> increased_amount;
+			}
+			BankAccount[i].intial_amount += increased_amount;
+			cout << "\t\t Record Updated \t\t" << endl;
+
+			std::cin.ignore();
+			std::getline(std::cin, xx);
+			system("cls");
+			switching(menu());
+		}
+
+	}
+	cout << "This Account Not In The System !!" << endl;
+
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+}
+void withdraw_amount()
+{
+	string xx;
+	long long x;
+	int decreased_amount;
+	cout << "Enter The Account No. : ";
+	cin >> x;
+	for (size_t i = 0; i < 100; i++)
+	{
+		if (x == BankAccount[i].account_no)
+		{
+			cout << "Account Number : ";
+			cout << BankAccount[i].account_no << endl;
+			cout << "Account Holder Name : ";
+			cout << BankAccount[i].account_name << endl;
+			cout << "Type Of Account : ";
+			cout << BankAccount[i].type << endl;
+			cout << "Balance Amount : ";
+			cout << BankAccount[i].intial_amount << endl;
+			cout << "\t\tTo withdraw Amount\t\t" << endl;
+			cout << "Enter the Amount To Be withdrawed" << endl;
+			cin >> decreased_amount;
+			while (decreased_amount < 0){
+				cout << "You Can't Enter A Negative Amount , Please Enter A Positive Amount !!" << endl;
+				cin >> decreased_amount;
+			}
+			if (decreased_amount > BankAccount[i].intial_amount){
+				cout << "Can't Complite This Operation ! \n You Don't Have Enough Money !" << endl;
+			}
+			else{
+				BankAccount[i].intial_amount -= decreased_amount;
+				cout << "\t\t Record Updated \t\t" << endl;
+			}
+			std::cin.ignore();
+			std::getline(std::cin, xx);
+			system("cls");
+			switching(menu());
+		}
+
+	}
+	cout << "This Account Not In The System !!" << endl;
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+}
+void balance_enquiry()
+{
+	string xx;
+	long long x;
+	cout << "Enter The Account No. : ";
+	cin >> x;
+	for (size_t i = 0; i < 100; i++)
+	{
+		if (x == BankAccount[i].account_no)
+		{
+			cout << "Account Number : ";
+			cout << BankAccount[i].account_no << endl;
+			cout << "Account Holder Name : ";
+			cout << BankAccount[i].account_name << endl;
+			cout << "Type Of Account : ";
+			cout << BankAccount[i].type << endl;
+			cout << "Balance Amount : ";
+			cout << BankAccount[i].intial_amount << endl;
+			break;
+		}
+
+	}
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+}
+void all_account_holder_list()
+{
+	string xx;
+	cout << "\t\t Account Holder List \t\t\t\t" << endl << endl;
+	cout << "-------------------------------------------------------" << endl;
+	cout << "A/C no.\t\t Name \t\t Type \t\t Balance " << endl;
+	cout << "-------------------------------------------------------" << endl;
+	for (size_t i = 0; i < 100; i++)
+	{
+		if (BankAccount[i].account_no != 0)
+		{
+			cout << BankAccount[i].account_no << "\t\t" << BankAccount[i].account_name << "\t\t" << BankAccount[i].type << "\t\t" << BankAccount[i].intial_amount << endl;
+			cout << "-------------------------------------------------------" << endl;
+		}
+	}
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+}
+void close_an_account()
+{
+
+	string xx;
+	long long x;
+	int i = 0;
+	cout << "Enter The Account No. : ";
+	cin >> x;
+	for (i = 0; i < 100; i++)
+	{
+		if (x == BankAccount[i].account_no)
+		{
+			BankAccount[i].account_name = "";
+			BankAccount[i].account_no = 0;
+			BankAccount[i].intial_amount = 0;
+			BankAccount[i].type = ' ';
+			cout << "Account Deleted !" << endl;
+			IndexOfDeletedAccount[i] = true;
+			std::cin.ignore();
+			std::getline(std::cin, xx);
+			system("cls");
+			switching(menu());
+		}
+	}
+	cout << "This Account Not In The System !! " << endl;
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+}
+
+void modify_account()
+{
+	string xx;
+	long long x;
+	int i = 0;
+	cout << "Enter The Account No. : ";
+	cin >> x;
+
+	for (i = 0; i < 100; i++)
+	{
+		if (x == BankAccount[i].account_no)
+		{
+			cout << "Account Number : ";
+			cout << BankAccount[i].account_no << endl;
+			cout << "Account Holder Name : ";
+			cout << BankAccount[i].account_name << endl;
+			cout << "Type Of Account : ";
+			cout << BankAccount[i].type << endl;
+			cout << "Balance Amount : ";
+			cout << BankAccount[i].intial_amount << endl;
+			cout << "Enter The New Details Of The Account  " << endl;
+
+			cout << "Modify The Account Name : ";
+			std::cin.ignore();
+			std::getline(std::cin, BankAccount[i].account_name);
+			cout << "Modify The Type Of The Account : ";
+			cin >> BankAccount[i].type;
+			cout << "Modify The Balance : ";
+			cin >> BankAccount[i].intial_amount;
+			cout << "\t\tRecord Updated\t\t  ";
+			std::cin.ignore();
+			std::getline(std::cin, xx);
+			system("cls");
+			switching(menu());
+		}
+
+	}
+	cout << "This Account Not In The System !! " << endl;
+	std::cin.ignore();
+	std::getline(std::cin, xx);
+	system("cls");
+	switching(menu());
+
+}
+int exit()
+{
+	return 0;
+}
